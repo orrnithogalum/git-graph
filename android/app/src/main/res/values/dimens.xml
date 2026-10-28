@@ -5,6 +5,8 @@
     <dimen name="widget_padding">8dp</dimen>
     <dimen name="widget_cell_small">5dp</dimen>
     <dimen name="widget_cell_small_margin">0.5dp</dimen>
+    <dimen name="widget_cell_compact">6dp</dimen>
+    <dimen name="widget_cell_compact_margin">0.75dp</dimen>
     <dimen name="widget_cell_medium">8dp</dimen>
     <dimen name="widget_cell_medium_margin">1dp</dimen>
     <dimen name="widget_cell_large">12dp</dimen>

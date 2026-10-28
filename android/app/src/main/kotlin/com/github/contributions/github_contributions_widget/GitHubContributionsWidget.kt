@@ -86,6 +86,7 @@ class GitHubContributionsWidget : AppWidgetProvider() {
         private val CELL_SIZES = listOf(
             Triple(R.layout.widget_cell_large, R.dimen.widget_cell_large, R.dimen.widget_cell_large_margin),
             Triple(R.layout.widget_cell_medium, R.dimen.widget_cell_medium, R.dimen.widget_cell_medium_margin),
+            Triple(R.layout.widget_cell_compact, R.dimen.widget_cell_compact, R.dimen.widget_cell_compact_margin),
             Triple(R.layout.widget_cell_small, R.dimen.widget_cell_small, R.dimen.widget_cell_small_margin)
         )
     }
