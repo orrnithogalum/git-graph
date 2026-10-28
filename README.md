@@ -16,7 +16,7 @@ A beautiful Android home screen widget that displays your GitHub contribution gr
 - 🏆 **Longest Streak Display** - See your best streak record
 - 👆 **Tap for Details** - Tap any cell to see contribution count and date
 - ↓ **Pull to Refresh** - Swipe down to refresh your contribution data
-- 🎨 **Color Themes** - Choose from Green, Blue, or Yellow color schemes
+- 🎨 **Color Themes** - Choose from Green, Blue, Yellow, or Material You color schemes
 - 🌈 **Theme-Aware Colors** - Streak icons and text match your selected theme
 
 ## Screenshots
@@ -27,13 +27,14 @@ A beautiful Android home screen widget that displays your GitHub contribution gr
 
 ## Color Themes
 
-Personalize your contribution graph with three beautiful color themes:
+Personalize your contribution graph with four beautiful color themes:
 
 | Theme | Graph Colors | Current Streak | Longest Streak |
 |-------|-------------|----------------|----------------|
 | 🟢 **Green** | GitHub default green | Orange 🔥 | Gold 🏆 |
 | 🔵 **Blue** | Slate/steel blue | Dark Blue 🔥 | Light Blue 🏆 |
 | 🟡 **Yellow** | Warm amber/gold | Dark Amber 🔥 | Bright Yellow 🏆 |
+| 🖼️ **Material You** | Your wallpaper's accent colors (Android 12+) | Medium Accent 🔥 | Bright Accent 🏆 |
 
 ## Installation
 
@@ -99,7 +100,7 @@ flutter build apk --release
 
 ### Changing Color Theme
 1. Scroll to the contribution graph
-2. Below the graph, tap on any colored circle (🟢 🔵 🟡)
+2. Below the graph, tap on any colored circle (🟢 🔵 🟡), or the one with a wallpaper icon for Material You (Android 12+)
 3. The graph and streak colors will update immediately
 4. Your preference is saved automatically
 
