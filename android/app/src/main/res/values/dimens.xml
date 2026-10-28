@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Widget grid sizes, shared by the widget layouts -->
+    <!-- Widget grid sizes, shared by the layouts and GitHubContributionsWidget,
+         which measures them to pick the largest cells whose 7 rows fit -->
     <dimen name="widget_padding">8dp</dimen>
     <dimen name="widget_cell_small">5dp</dimen>
     <dimen name="widget_cell_small_margin">0.5dp</dimen>

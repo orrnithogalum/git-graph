@@ -82,11 +82,12 @@ class GitHubContributionsWidget : AppWidgetProvider() {
             }
         }
         
-        // Cell size configurations: (cellLayoutId, cellSizeWithMargin, minHeight)
-        // Small: 5dp cell + 1dp margin = 6dp per cell, 7 rows = 42dp min
-        // Medium: 8dp cell + 2dp margin = 10dp per cell, 7 rows = 70dp min
-        // Large: 12dp cell + 3dp margin = 15dp per cell, 7 rows = 105dp min
-        private data class CellConfig(val layoutId: Int, val cellSize: Int, val minHeight: Int)
+        // Cell layouts from largest to smallest: (layout, cell size, margin around cell)
+        private val CELL_SIZES = listOf(
+            Triple(R.layout.widget_cell_large, R.dimen.widget_cell_large, R.dimen.widget_cell_large_margin),
+            Triple(R.layout.widget_cell_medium, R.dimen.widget_cell_medium, R.dimen.widget_cell_medium_margin),
+            Triple(R.layout.widget_cell_small, R.dimen.widget_cell_small, R.dimen.widget_cell_small_margin)
+        )
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -154,19 +155,26 @@ class GitHubContributionsWidget : AppWidgetProvider() {
         val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 200)
         val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 100)
         
-        // Select cell size based on widget height
-        // Height thresholds: small (<70dp), medium (70-100dp), large (>100dp)
-        val (cellLayoutId, cellSizeWithMargin) = when {
-            minHeight >= 100 -> Pair(R.layout.widget_cell_large, 15)   // 12dp + 3dp margin
-            minHeight >= 70 -> Pair(R.layout.widget_cell_medium, 10)   // 8dp + 2dp margin
-            else -> Pair(R.layout.widget_cell_small, 6)                // 5dp + 1dp margin
+        // Space inside the widget's padding, in pixels
+        val resources = context.resources
+        val density = resources.displayMetrics.density
+        val padding = 2 * resources.getDimensionPixelSize(R.dimen.widget_padding)
+        val availableWidth = (minWidth * density).toInt() - padding
+        val availableHeight = (minHeight * density).toInt() - padding
+        
+        // Select the largest cell size whose 7 rows fit the height. Sizes are measured
+        // in pixels, rounded the same way the layout rounds them, so the bottom row
+        // is never clipped
+        val cellSizes = CELL_SIZES.map { (layoutId, size, margin) ->
+            layoutId to resources.getDimensionPixelSize(size) + 2 * resources.getDimensionPixelSize(margin)
         }
+        val (cellLayoutId, cellSizeWithMargin) = cellSizes.firstOrNull { 7 * it.second <= availableHeight }
+            ?: cellSizes.last()
         
         // Calculate weeks based on width and cell size
-        val padding = 20 // padding to ensure no cut-off
-        val weeksToShow = ((minWidth - padding) / cellSizeWithMargin).coerceIn(3, 52)
+        val weeksToShow = (availableWidth / cellSizeWithMargin).coerceIn(3, 52)
         
-        Log.d(TAG, "Widget size: ${minWidth}x${minHeight}, cellSize: $cellSizeWithMargin, showing $weeksToShow weeks")
+        Log.d(TAG, "Widget size: ${minWidth}x${minHeight}, cellSize: ${cellSizeWithMargin}px, showing $weeksToShow weeks")
         
         // Load contribution data
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
