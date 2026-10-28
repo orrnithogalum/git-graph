@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cell_view"
-    android:layout_width="12dp"
-    android:layout_height="12dp"
-    android:layout_marginStart="1.5dp"
-    android:layout_marginEnd="1.5dp"
-    android:layout_marginTop="1.5dp"
-    android:layout_marginBottom="1.5dp"
+    android:layout_width="@dimen/widget_cell_large"
+    android:layout_height="@dimen/widget_cell_large"
+    android:layout_marginStart="@dimen/widget_cell_large_margin"
+    android:layout_marginEnd="@dimen/widget_cell_large_margin"
+    android:layout_marginTop="@dimen/widget_cell_large_margin"
+    android:layout_marginBottom="@dimen/widget_cell_large_margin"
     android:scaleType="fitXY"
     android:src="@drawable/cell_rounded_large"/>
