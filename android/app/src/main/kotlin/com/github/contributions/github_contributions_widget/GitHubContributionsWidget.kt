@@ -12,6 +12,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import org.json.JSONObject
 
@@ -231,12 +232,13 @@ class GitHubContributionsWidget : AppWidgetProvider() {
                         val cellView = RemoteViews(context.packageName, cellLayoutId)
                         
                         if (level >= 0) {
-                            // Actual contribution day
+                            // Actual contribution day - tint the rounded cell shape
+                            // (setBackgroundColor would replace it with a sharp square)
                             val color = levelColors[level.coerceIn(0, 4)]
-                            cellView.setInt(R.id.cell_view, "setBackgroundColor", color)
+                            cellView.setInt(R.id.cell_view, "setColorFilter", color)
                         } else {
-                            // Future day - make it transparent/invisible
-                            cellView.setInt(R.id.cell_view, "setBackgroundColor", Color.TRANSPARENT)
+                            // Future day - hide it but keep its space
+                            cellView.setViewVisibility(R.id.cell_view, View.INVISIBLE)
                         }
                         
                         weekLayout.addView(R.id.week_column, cellView)
