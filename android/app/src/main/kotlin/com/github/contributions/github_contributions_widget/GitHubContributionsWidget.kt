@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Build
@@ -49,7 +50,9 @@ class GitHubContributionsWidget : AppWidgetProvider() {
             }
         }
         
-        // Color themes: 0 = Green (default), 1 = Blue, 2 = Yellow
+        // Color themes: 0 = Green (default), 1 = Blue, 2 = Yellow, 3 = Material You
+        private const val THEME_MATERIAL_YOU = 3
+        
         private val GREEN_COLORS = arrayOf(
             Color.parseColor("#2d333b"), // Level 0 - Dark gray (empty days)
             Color.parseColor("#0e4429"), // Level 1 - Dark green
@@ -73,6 +76,17 @@ class GitHubContributionsWidget : AppWidgetProvider() {
             Color.parseColor("#d4a03a"), // Level 3 - Light amber
             Color.parseColor("#f7c948")  // Level 4 - Bright yellow
         )
+        
+        // Material You theme - system palette generated from the wallpaper (Android 12+)
+        // Passed as resources so the launcher resolves them, following wallpaper changes
+        private val MATERIAL_YOU_COLOR_RES = intArrayOf(
+            android.R.color.system_neutral2_800, // Level 0 - Muted surface (empty days)
+            android.R.color.system_accent1_700,  // Level 1 - Dark accent
+            android.R.color.system_accent1_500,  // Level 2 - Medium accent
+            android.R.color.system_accent1_300,  // Level 3 - Light accent
+            android.R.color.system_accent1_100   // Level 4 - Bright accent
+        )
+        private const val MATERIAL_YOU_BACKGROUND_RES = android.R.color.system_neutral1_900
         
         private fun getColorsForTheme(theme: Int): Array<Int> {
             return when (theme) {
@@ -202,6 +216,17 @@ class GitHubContributionsWidget : AppWidgetProvider() {
                     prefs.getInt("flutter.widget_color_theme", prefs.getInt("widget_color_theme", 0))
                 }
                 val levelColors = getColorsForTheme(colorTheme)
+                val materialYou = colorTheme == THEME_MATERIAL_YOU
+                
+                // Launchers reuse the existing views on update, so clear the tint when
+                // switching away from Material You
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (materialYou) {
+                        views.setColorStateList(R.id.widget_container, "setBackgroundTintList", MATERIAL_YOU_BACKGROUND_RES)
+                    } else {
+                        views.setColorStateList(R.id.widget_container, "setBackgroundTintList", null as ColorStateList?)
+                    }
+                }
                 
                 Log.d(TAG, "Total weeks in data: ${weeksArray.length()}, colorTheme: $colorTheme")
                 
@@ -243,8 +268,12 @@ class GitHubContributionsWidget : AppWidgetProvider() {
                         if (level >= 0) {
                             // Actual contribution day - tint the rounded cell shape
                             // (setBackgroundColor would replace it with a sharp square)
-                            val color = levelColors[level.coerceIn(0, 4)]
-                            cellView.setInt(R.id.cell_view, "setColorFilter", color)
+                            val levelIndex = level.coerceIn(0, 4)
+                            if (materialYou && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                cellView.setColor(R.id.cell_view, "setColorFilter", MATERIAL_YOU_COLOR_RES[levelIndex])
+                            } else {
+                                cellView.setInt(R.id.cell_view, "setColorFilter", levelColors[levelIndex])
+                            }
                         } else {
                             // Future day - hide it but keep its space
                             cellView.setViewVisibility(R.id.cell_view, View.INVISIBLE)
