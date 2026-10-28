@@ -103,6 +103,12 @@ class GitHubContributionsWidget : AppWidgetProvider() {
             Triple(R.layout.widget_cell_compact, R.dimen.widget_cell_compact, R.dimen.widget_cell_compact_margin),
             Triple(R.layout.widget_cell_small, R.dimen.widget_cell_small, R.dimen.widget_cell_small_margin)
         )
+        
+        /** Material You level colors (empty, level 1-4), or null before Android 12 */
+        fun getMaterialYouColors(context: Context): IntArray? {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
+            return MATERIAL_YOU_COLOR_RES.map { context.getColor(it) }.toIntArray()
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {

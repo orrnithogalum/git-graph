@@ -685,11 +685,20 @@ class _HomeScreenState extends State<HomeScreen> {
         _buildThemeCircle(ColorTheme.blue, GitHubColors.blueLevel4),
         const SizedBox(width: 8),
         _buildThemeCircle(ColorTheme.yellow, GitHubColors.yellowLevel4),
+        // Only offered on devices with dynamic colors (Android 12+)
+        if (GitHubColors.materialYouLevels != null) ...[
+          const SizedBox(width: 8),
+          _buildThemeCircle(
+            ColorTheme.materialYou,
+            GitHubColors.getPrimaryColorForTheme(ColorTheme.materialYou),
+            icon: Icons.wallpaper,
+          ),
+        ],
       ],
     );
   }
 
-  Widget _buildThemeCircle(ColorTheme theme, Color color) {
+  Widget _buildThemeCircle(ColorTheme theme, Color color, {IconData? icon}) {
     final isSelected = _colorTheme == theme;
     return GestureDetector(
       onTap: () => _saveColorTheme(theme),
@@ -720,7 +729,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
                 size: 16,
               )
-            : null,
+            : icon != null
+                ? Icon(
+                    icon,
+                    color: const Color(0xFF0d1117),
+                    size: 14,
+                  )
+                : null,
       ),
     );
   }

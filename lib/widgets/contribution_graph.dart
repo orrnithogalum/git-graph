@@ -7,6 +7,7 @@ enum ColorTheme {
   green,
   blue,
   yellow,
+  materialYou, // System colors from the wallpaper (Android 12+)
 }
 
 /// GitHub contribution colors (dark theme)
@@ -34,11 +35,33 @@ class GitHubColors {
   static const Color yellowLevel3 = Color(0xFFd4a03a);
   static const Color yellowLevel4 = Color(0xFFf7c948);
 
+  // Material You theme (empty, level 1-4), read from the system palette by
+  // loadMaterialYouColors(). Null when the device has no dynamic colors.
+  static List<Color>? materialYouLevels;
+
+  static const MethodChannel _materialYouChannel = MethodChannel('gitgraph/material_you');
+
+  /// Load the Material You palette from Android (same colors as the widget)
+  static Future<void> loadMaterialYouColors() async {
+    try {
+      final colors = await _materialYouChannel.invokeListMethod<int>('getLevelColors');
+      materialYouLevels = colors?.map((value) => Color(value)).toList();
+    } catch (e) {
+      materialYouLevels = null;
+    }
+  }
+
   static Color getColorForLevel(int level, {ColorTheme theme = ColorTheme.green}) {
+    final materialYou = materialYouLevels;
+    if (theme == ColorTheme.materialYou && materialYou != null) {
+      return materialYou[level.clamp(0, 4)];
+    }
+
     if (level == 0) return level0;
-    
+
     switch (theme) {
       case ColorTheme.green:
+      case ColorTheme.materialYou: // Falls back to green without dynamic colors
         switch (level) {
           case 1: return greenLevel1;
           case 2: return greenLevel2;
@@ -74,6 +97,8 @@ class GitHubColors {
         return blueLevel4;
       case ColorTheme.yellow:
         return yellowLevel4;
+      case ColorTheme.materialYou:
+        return getColorForLevel(4, theme: theme);
     }
   }
 
@@ -91,6 +116,10 @@ class GitHubColors {
         return blueLevel2; // Dark blue
       case ColorTheme.yellow:
         return yellowLevel2; // Dark amber
+      case ColorTheme.materialYou:
+        return materialYouLevels == null
+            ? defaultCurrentStreakColor
+            : getColorForLevel(2, theme: theme); // Medium accent
     }
   }
 
@@ -104,6 +133,10 @@ class GitHubColors {
         return blueLevel4; // Light blue
       case ColorTheme.yellow:
         return yellowLevel4; // Bright yellow
+      case ColorTheme.materialYou:
+        return materialYouLevels == null
+            ? defaultLongestStreakColor
+            : getColorForLevel(4, theme: theme); // Bright accent
     }
   }
 }

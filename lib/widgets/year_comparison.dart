@@ -194,6 +194,8 @@ class YearComparisonCard extends StatelessWidget {
         return GitHubColors.blueLevel4;
       case ColorTheme.yellow:
         return GitHubColors.yellowLevel4;
+      case ColorTheme.materialYou:
+        return GitHubColors.getPrimaryColorForTheme(colorTheme);
     }
   }
 

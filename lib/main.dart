@@ -3,6 +3,7 @@ import 'package:home_widget/home_widget.dart';
 import 'screens/home_screen.dart';
 import 'services/widget_service.dart';
 import 'services/notification_service.dart';
+import 'widgets/contribution_graph.dart';
 
 const String appGroupId = 'com.github.contributions.widget';
 const String widgetName = 'GitHubContributionsWidget';
@@ -10,6 +11,9 @@ const String widgetName = 'GitHubContributionsWidget';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Load the Material You palette before the first frame uses it
+  await GitHubColors.loadMaterialYouColors();
+
   // Initialize home widget
   await HomeWidget.setAppGroupId(appGroupId);
   

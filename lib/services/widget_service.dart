@@ -47,7 +47,7 @@ class WidgetService {
     
     // Get the current color theme from SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    final colorTheme = prefs.getInt('colorTheme') ?? 0; // 0=green, 1=blue, 2=yellow
+    final colorTheme = prefs.getInt('colorTheme') ?? 0; // 0=green, 1=blue, 2=yellow, 3=material you
     
     // Convert to a simple format for the widget
     final widgetData = {
